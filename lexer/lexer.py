@@ -83,6 +83,9 @@ class Lexer:
             if char == '"':
                 tokens.append(self.read_string())
                 continue
+            if char == "'":
+                tokens.append(self.read_char())
+                continue
             if self.peek() is not None:
                 pair = char + self.peek()
                 if pair in self.multi_char_tokens:
@@ -197,4 +200,32 @@ class Lexer:
         raise SyntaxError(
             f"Unterminated string at line "
             f"{start_line}, column {start_column}"
+        )
+
+    def read_char(self):
+        start_line = self.line
+        start_column = self.column
+        self.advance() 
+        if self.current() is None:
+            raise SyntaxError(
+                f"Unterminated character at line "
+                f"{start_line}, column {start_column}"
+            )
+        if self.current() == "\n":
+            raise SyntaxError(
+                f"Unterminated character at line "
+                f"{start_line}, column {start_column}"
+            )
+        char = self.advance()
+        if self.current() != "'":
+            raise SyntaxError(
+                f"Character literal must contain exactly one character "
+                f"at line {start_line}, column {start_column}"
+            )
+        self.advance() 
+        return Token(
+            TokenType.CHAR,
+            char,
+            start_line,
+            start_column
         )

@@ -2,8 +2,8 @@ from lexer.lexer import Lexer
 
 
 source = """
-sent Name = "Sam"\\
-write<"Hello World">\\
+letter C = 'A'\\
+letter X = 'x'\\
 """
 
 
