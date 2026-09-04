@@ -80,6 +80,9 @@ class Lexer:
             if char.isdigit():
                 tokens.append(self.read_number())
                 continue
+            if char == '"':
+                tokens.append(self.read_string())
+                continue
             if self.peek() is not None:
                 pair = char + self.peek()
                 if pair in self.multi_char_tokens:
@@ -168,4 +171,30 @@ class Lexer:
             operator,
             line,
             column
+        )
+
+    def read_string(self):
+        start_line = self.line
+        start_column = self.column
+        self.advance()  
+        string = ""
+        while self.current() is not None:
+            char = self.current()
+            if char == '"':
+                self.advance() 
+                return Token(
+                    TokenType.STRING,
+                    string,
+                    start_line,
+                    start_column
+                )
+            if char == "\n":
+                raise SyntaxError(
+                    f"Unterminated string at line "
+                    f"{start_line}, column {start_column}"
+                )
+            string += self.advance()
+        raise SyntaxError(
+            f"Unterminated string at line "
+            f"{start_line}, column {start_column}"
         )
