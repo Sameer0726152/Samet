@@ -20,6 +20,7 @@ class Lexer:
         }
         self.single_char_tokens = {
             "=": TokenType.ASSIGN,
+            "!": TokenType.NOT,
             "+": TokenType.PLUS,
             "-": TokenType.MINUS,
             "*": TokenType.MULTIPLY,
@@ -34,6 +35,14 @@ class Lexer:
             "(": TokenType.LEFT_PAREN,
             ")": TokenType.RIGHT_PAREN,
             "\\": TokenType.STATEMENT_END
+        }
+        self.multi_char_tokens = {
+            "<=": TokenType.LESS_EQUAL,
+            ">=": TokenType.GREATER_EQUAL,
+            "==": TokenType.EQUAL_EQUAL,
+            "!=": TokenType.NOT_EQUAL,
+            "&&": TokenType.AND,
+            "||": TokenType.OR_OR
         }
 
     def current(self):
@@ -71,6 +80,11 @@ class Lexer:
             if char.isdigit():
                 tokens.append(self.read_number())
                 continue
+            if self.peek() is not None:
+                pair = char + self.peek()
+                if pair in self.multi_char_tokens:
+                    tokens.append(self.read_multi_char())
+                    continue
             if char in self.single_char_tokens:
                 tokens.append(self.read_single_char())
                 continue
@@ -133,14 +147,25 @@ class Lexer:
     def read_single_char(self):
         line = self.line
         column = self.column
-
         char = self.advance()
-
         token_type = self.single_char_tokens[char]
-
         return Token(
             token_type,
             char,
+            line,
+            column
+        )
+
+    def read_multi_char(self):
+        line = self.line
+        column = self.column
+        first = self.advance()
+        second = self.advance()
+        operator = first + second
+        token_type = self.multi_char_tokens[operator]
+        return Token(
+            token_type,
+            operator,
             line,
             column
         )

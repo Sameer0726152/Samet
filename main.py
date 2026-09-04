@@ -2,8 +2,13 @@ from lexer.lexer import Lexer
 
 
 source = """
-num Age = 20\\
-Age = Age + 1\\
+Age <= 20\\
+Age >= 10\\
+Age == 15\\
+Age != 25\\
+Age && 10\\
+Age || 20\\
+!Age\\
 """
 
 
