@@ -1,11 +1,9 @@
 from lexer.lexer import Lexer
+from parser.parser import Parser
 
 
 source = """
-# This is a comment
-num Age = 20\\ # Age declaration
-Age = Age + 1\\ # Increase age
-write<Age>\\
+num Age = 20\\
 """
 
 
@@ -15,3 +13,11 @@ tokens = lexer.tokenize()
 
 for token in tokens:
     print(token)
+
+print("\nAST:")
+
+parser = Parser(tokens)
+
+ast = parser.parse()
+
+print(ast)

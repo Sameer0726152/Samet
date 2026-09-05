@@ -146,6 +146,13 @@ class Lexer:
                 number += self.advance()
             else:
                 break
+        if self.current() is not None:
+            char = self.current()
+            if char.isalpha() or char == "_":
+                raise SyntaxError(
+                    f"Invalid number '{number + char}' "
+                    f"at line {start_line}, column {start_column}"
+                )
         return Token(
             TokenType.NUMBER,
             number,
