@@ -2,8 +2,10 @@ from lexer.lexer import Lexer
 
 
 source = """
-letter C = 'A'\\
-letter X = 'x'\\
+# This is a comment
+num Age = 20\\ # Age declaration
+Age = Age + 1\\ # Increase age
+write<Age>\\
 """
 
 

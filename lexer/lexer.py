@@ -74,6 +74,9 @@ class Lexer:
             if char.isspace():
                 self.advance()
                 continue
+            if char == "#":
+                self.skip_comment()
+                continue
             if char.isalpha():
                 tokens.append(self.read_word())
                 continue
@@ -229,3 +232,9 @@ class Lexer:
             start_line,
             start_column
         )
+
+    def skip_comment(self):
+        while self.current() is not None:
+            if self.current() == "\n":
+                break
+            self.advance()
