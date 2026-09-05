@@ -1,5 +1,5 @@
 from lexer.tokens import TokenType
-from ast import Declaration
+from syntax_tree import Program, Declaration
 
 class Parser:
     def __init__(self, tokens):
@@ -45,4 +45,7 @@ class Parser:
         )
 
     def parse(self):
-        return self.parse_declaration()
+        statements = []
+        while self.current().type != TokenType.EOF:
+            statements.append(self.parse_declaration())
+        return Program(statements)

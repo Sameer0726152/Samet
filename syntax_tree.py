@@ -1,3 +1,10 @@
+class Program:
+    def __init__(self, statements):
+        self.statements = statements
+
+    def __repr__(self):
+        return f"Program(statements={self.statements!r})"
+
 class Declaration:
     def __init__(self, data_type, name, value):
         self.data_type = data_type
