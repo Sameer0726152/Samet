@@ -2,10 +2,8 @@ from lexer.lexer import Lexer
 from parser.parser import Parser
 
 source = """
-num Age = 20\\
-sent Name = "Sameer"\\
-logic Active = true\\
-letter Grade = 'A'\\
+num Age = 20 + 5\\
+num Score = 100 - 25\\
 """
 
 lexer = Lexer(source)
