@@ -36,12 +36,38 @@ class Parser:
         type_token = self.advance()
         name_token = self.expect(TokenType.IDENTIFIER)
         self.expect(TokenType.ASSIGN)
-        value_token = self.expect(TokenType.NUMBER)
+        if type_token.type == TokenType.NUM:
+            value_token = self.expect(TokenType.NUMBER)
+            value = int(value_token.value)
+        elif type_token.type == TokenType.SENT:
+            value_token = self.expect(TokenType.STRING)
+            value = value_token.value
+        elif type_token.type == TokenType.LOGIC:
+            value_token = self.current()
+            if value_token.type == TokenType.TRUE:
+                self.advance()
+                value = True
+            elif value_token.type == TokenType.FALSE:
+                self.advance()
+                value = False
+            else:
+                raise SyntaxError(
+                    f"Expected TRUE or FALSE "
+                    f"at line {value_token.line}, column {value_token.column}"
+                )
+        elif type_token.type == TokenType.LETTER:
+            value_token = self.expect(TokenType.CHAR)
+            value = value_token.value
+        else:
+            raise SyntaxError(
+                f"Invalid data type '{type_token.value}' "
+                f"at line {type_token.line}, column {type_token.column}"
+            )
         self.expect(TokenType.STATEMENT_END)
         return Declaration(
             type_token.value,
             name_token.value,
-            int(value_token.value)
+            value
         )
 
     def parse(self):

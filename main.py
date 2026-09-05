@@ -3,8 +3,9 @@ from parser.parser import Parser
 
 source = """
 num Age = 20\\
-num Score = 100\\
-num Marks = 95\\
+sent Name = "Sameer"\\
+logic Active = true\\
+letter Grade = 'A'\\
 """
 
 lexer = Lexer(source)
