@@ -77,10 +77,25 @@ class Parser:
         )
 
     def parse_term(self):
-        left = self.parse_primary()
+        left = self.parse_factor()
         while self.current().type in (
             TokenType.PLUS,
             TokenType.MINUS
+        ):
+            operator_token = self.advance()
+            right = self.parse_factor()
+            left = BinaryExpression(
+                left,
+                operator_token.value,
+                right
+            )
+        return left
+
+    def parse_factor(self):
+        left = self.parse_primary()
+        while self.current().type in (
+            TokenType.MULTIPLY,
+            TokenType.DIVIDE
         ):
             operator_token = self.advance()
             right = self.parse_primary()
