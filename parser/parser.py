@@ -1,5 +1,5 @@
 from lexer.tokens import TokenType
-from syntax_tree import Program, Declaration, NumberLiteral, BinaryExpression
+from syntax_tree import Program, Declaration, NumberLiteral, StringLiteral, CharLiteral, BooleanLiteral, Identifier, BinaryExpression
 
 class Parser:
     def __init__(self, tokens):
@@ -36,32 +36,7 @@ class Parser:
         type_token = self.advance()
         name_token = self.expect(TokenType.IDENTIFIER)
         self.expect(TokenType.ASSIGN)
-        if type_token.type == TokenType.NUM:
-            value = self.parse_expression()
-        elif type_token.type == TokenType.SENT:
-            value_token = self.expect(TokenType.STRING)
-            value = value_token.value
-        elif type_token.type == TokenType.LOGIC:
-            value_token = self.current()
-            if value_token.type == TokenType.TRUE:
-                self.advance()
-                value = True
-            elif value_token.type == TokenType.FALSE:
-                self.advance()
-                value = False
-            else:
-                raise SyntaxError(
-                    f"Expected TRUE or FALSE "
-                    f"at line {value_token.line}, column {value_token.column}"
-                )
-        elif type_token.type == TokenType.LETTER:
-            value_token = self.expect(TokenType.CHAR)
-            value = value_token.value
-        else:
-            raise SyntaxError(
-                f"Invalid data type '{type_token.value}' "
-                f"at line {type_token.line}, column {type_token.column}"
-            )
+        value = self.parse_expression()
         self.expect(TokenType.STATEMENT_END)
         return Declaration(
             type_token.value,
@@ -79,9 +54,22 @@ class Parser:
         token = self.current()
         if token.type == TokenType.NUMBER:
             self.advance()
-            return NumberLiteral(
-                int(token.value)
-            )
+            return NumberLiteral(int(token.value))
+        if token.type == TokenType.STRING:
+            self.advance()
+            return StringLiteral(token.value)
+        if token.type == TokenType.CHAR:
+            self.advance()
+            return CharLiteral(token.value)
+        if token.type == TokenType.TRUE:
+            self.advance()
+            return BooleanLiteral(True)
+        if token.type == TokenType.FALSE:
+            self.advance()
+            return BooleanLiteral(False)
+        if token.type == TokenType.IDENTIFIER:
+            self.advance()
+            return Identifier(token.value)
         raise SyntaxError(
             f"Expected expression, "
             f"but found {token.type.name} "
