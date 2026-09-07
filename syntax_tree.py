@@ -41,6 +41,17 @@ class BinaryExpression:
             f"right={self.right!r}"
             f")"
         )
+class UnaryExpression:
+    def __init__(self, operator, operand):
+        self.operator = operator
+        self.operand = operand
+    def __repr__(self):
+        return (
+            f"UnaryExpression("
+            f"operator={self.operator!r}, "
+            f"operand={self.operand!r}"
+            f")"
+        )
 class Declaration:
     def __init__(self, data_type, name, value):
         self.data_type = data_type

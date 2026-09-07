@@ -1,5 +1,5 @@
 from lexer.tokens import TokenType
-from syntax_tree import Program, Declaration, NumberLiteral, StringLiteral, CharLiteral, BooleanLiteral, Identifier, BinaryExpression
+from syntax_tree import Program, Declaration, NumberLiteral, StringLiteral, CharLiteral, BooleanLiteral, Identifier, UnaryExpression, BinaryExpression
 
 class Parser:
     def __init__(self, tokens):
@@ -70,6 +70,11 @@ class Parser:
         if token.type == TokenType.IDENTIFIER:
             self.advance()
             return Identifier(token.value)
+        if token.type == TokenType.LEFT_PAREN:
+            self.advance()
+            expression = self.parse_expression()
+            self.expect(TokenType.RIGHT_PAREN)
+            return expression
         raise SyntaxError(
             f"Expected expression, "
             f"but found {token.type.name} "
@@ -92,19 +97,49 @@ class Parser:
         return left
 
     def parse_factor(self):
-        left = self.parse_primary()
+        left = self.parse_power()
         while self.current().type in (
             TokenType.MULTIPLY,
             TokenType.DIVIDE
         ):
             operator_token = self.advance()
-            right = self.parse_primary()
+            right = self.parse_power()
             left = BinaryExpression(
                 left,
                 operator_token.value,
                 right
             )
         return left
+
+    def parse_power(self):
+        left = self.parse_unary()
+        while self.current().type == TokenType.POWER:
+            operator_token = self.advance()
+            right = self.parse_unary()
+            left = BinaryExpression(
+                left,
+                operator_token.value,
+                right
+            )
+        return left
+
+    def parse_unary(self):
+        token = self.current()
+        if token.type == TokenType.NOT:
+            self.advance()
+            operand = self.parse_unary()
+            return UnaryExpression(
+                token.value,
+                operand
+            )
+        if token.type == TokenType.MINUS:
+            self.advance()
+            operand = self.parse_unary()
+            return UnaryExpression(
+                token.value,
+                operand
+            )
+        return self.parse_primary()
 
     def parse_expression(self):
         return self.parse_term()
