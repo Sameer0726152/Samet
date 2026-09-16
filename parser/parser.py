@@ -185,5 +185,17 @@ class Parser:
             )
         return left
 
+    def parse_logical_or(self):
+        left = self.parse_logical_and()
+        while self.current().type == TokenType.OR_OR:
+            operator_token = self.advance()
+            right = self.parse_logical_and()
+            left = BinaryExpression(
+                left,
+                operator_token.value,
+                right
+            )
+        return left
+
     def parse_expression(self):
-        return self.parse_logical_and()
+        return self.parse_logical_or()
