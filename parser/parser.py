@@ -1,5 +1,5 @@
 from lexer.tokens import TokenType
-from syntax_tree import Program, Declaration, NumberLiteral, StringLiteral, CharLiteral, BooleanLiteral, Identifier, UnaryExpression, BinaryExpression, Assignment
+from syntax_tree import Program, Declaration, NumberLiteral, StringLiteral, CharLiteral, BooleanLiteral, Identifier, UnaryExpression, BinaryExpression, Assignment, Write
 
 class Parser:
     def __init__(self, tokens):
@@ -10,6 +10,11 @@ class Parser:
         if self.position >= len(self.tokens):
             return None
         return self.tokens[self.position]
+
+    def peek(self):
+        if self.position + 1 >= len(self.tokens):
+            return None
+        return self.tokens[self.position + 1]
 
     def advance(self):
         if self.position >= len(self.tokens):
@@ -56,6 +61,8 @@ class Parser:
                 statements.append(self.parse_declaration())
             elif self.current().type == TokenType.IDENTIFIER:
                 statements.append(self.parse_assignment())
+            elif self.current().type == TokenType.WRITE:
+                statements.append(self.parse_write())
             else:
                 token = self.current()
                 raise SyntaxError(
@@ -163,6 +170,11 @@ class Parser:
             TokenType.GREATER,
             TokenType.GREATER_EQUAL
         ):
+            if (
+                self.current().type == TokenType.GREATER
+                and self.peek().type == TokenType.STATEMENT_END
+            ):
+                break
             operator_token = self.advance()
             right = self.parse_term()
             left = BinaryExpression(
@@ -170,6 +182,7 @@ class Parser:
                 operator_token.value,
                 right
             )
+
         return left
 
     def parse_equality(self):
@@ -220,6 +233,14 @@ class Parser:
             name_token.value,
             value
         )
+
+    def parse_write(self):
+        self.expect(TokenType.WRITE)
+        self.expect(TokenType.LESS)
+        value = self.parse_expression()
+        self.expect(TokenType.GREATER)
+        self.expect(TokenType.STATEMENT_END)
+        return Write(value)
 
     def parse_expression(self):
         return self.parse_logical_or()

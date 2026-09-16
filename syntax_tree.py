@@ -76,3 +76,8 @@ class Assignment:
             f"value={self.value!r}"
             f")"
         )
+class Write:
+    def __init__(self, value):
+        self.value = value
+    def __repr__(self):
+        return f"Write(value={self.value!r})"
