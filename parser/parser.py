@@ -141,5 +141,37 @@ class Parser:
             )
         return self.parse_primary()
 
+    def parse_comparison(self):
+        left = self.parse_term()
+        while self.current().type in (
+            TokenType.LESS,
+            TokenType.LESS_EQUAL,
+            TokenType.GREATER,
+            TokenType.GREATER_EQUAL
+        ):
+            operator_token = self.advance()
+            right = self.parse_term()
+            left = BinaryExpression(
+                left,
+                operator_token.value,
+                right
+            )
+        return left
+
+    def parse_equality(self):
+        left = self.parse_comparison()
+        while self.current().type in (
+            TokenType.EQUAL_EQUAL,
+            TokenType.NOT_EQUAL
+        ):
+            operator_token = self.advance()
+            right = self.parse_comparison()
+            left = BinaryExpression(
+                left,
+                operator_token.value,
+                right
+            )
+        return left
+
     def parse_expression(self):
-        return self.parse_term()
+        return self.parse_equality()
