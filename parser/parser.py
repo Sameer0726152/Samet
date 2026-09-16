@@ -173,5 +173,17 @@ class Parser:
             )
         return left
 
+    def parse_logical_and(self):
+        left = self.parse_equality()
+        while self.current().type == TokenType.AND:
+            operator_token = self.advance()
+            right = self.parse_equality()
+            left = BinaryExpression(
+                left,
+                operator_token.value,
+                right
+            )
+        return left
+
     def parse_expression(self):
-        return self.parse_equality()
+        return self.parse_logical_and()
