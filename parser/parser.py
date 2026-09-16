@@ -1,5 +1,5 @@
 from lexer.tokens import TokenType
-from syntax_tree import Program, Declaration, NumberLiteral, StringLiteral, CharLiteral, BooleanLiteral, Identifier, UnaryExpression, BinaryExpression
+from syntax_tree import Program, Declaration, NumberLiteral, StringLiteral, CharLiteral, BooleanLiteral, Identifier, UnaryExpression, BinaryExpression, Assignment
 
 class Parser:
     def __init__(self, tokens):
@@ -47,7 +47,21 @@ class Parser:
     def parse(self):
         statements = []
         while self.current().type != TokenType.EOF:
-            statements.append(self.parse_declaration())
+            if self.current().type in (
+                TokenType.NUM,
+                TokenType.SENT,
+                TokenType.LOGIC,
+                TokenType.LETTER
+            ):
+                statements.append(self.parse_declaration())
+            elif self.current().type == TokenType.IDENTIFIER:
+                statements.append(self.parse_assignment())
+            else:
+                token = self.current()
+                raise SyntaxError(
+                    f"Unexpected token {token.type.name} "
+                    f"at line {token.line}, column {token.column}"
+                )
         return Program(statements)
 
     def parse_primary(self):
@@ -196,6 +210,16 @@ class Parser:
                 right
             )
         return left
+
+    def parse_assignment(self):
+        name_token = self.expect(TokenType.IDENTIFIER)
+        self.expect(TokenType.ASSIGN)
+        value = self.parse_expression()
+        self.expect(TokenType.STATEMENT_END)
+        return Assignment(
+            name_token.value,
+            value
+        )
 
     def parse_expression(self):
         return self.parse_logical_or()

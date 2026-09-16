@@ -2,8 +2,8 @@ from lexer.lexer import Lexer
 from parser.parser import Parser
 
 source = """
-logic A = Age > 18 || Age < 10\\
-logic B = Age > 18 || Age < 10 && Age != 5\\
+num Age = 20\\
+Age = Age + 1\\
 """
 
 lexer = Lexer(source)

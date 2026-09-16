@@ -65,3 +65,14 @@ class Declaration:
             f"value={self.value!r}"
             f")"
         )
+class Assignment:
+    def __init__(self, name, value):
+        self.name = name
+        self.value = value
+    def __repr__(self):
+        return (
+            f"Assignment("
+            f"name={self.name!r}, "
+            f"value={self.value!r}"
+            f")"
+        )
