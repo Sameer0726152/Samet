@@ -81,3 +81,16 @@ class Write:
         self.value = value
     def __repr__(self):
         return f"Write(value={self.value!r})"
+class If:
+    def __init__(self, condition, body, else_body=None):
+        self.condition = condition
+        self.body = body
+        self.else_body = else_body
+    def __repr__(self):
+        return (
+            f"If("
+            f"condition={self.condition!r}, "
+            f"body={self.body!r}, "
+            f"else_body={self.else_body!r}"
+            f")"
+        )

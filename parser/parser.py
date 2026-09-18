@@ -1,5 +1,5 @@
 from lexer.tokens import TokenType
-from syntax_tree import Program, Declaration, NumberLiteral, StringLiteral, CharLiteral, BooleanLiteral, Identifier, UnaryExpression, BinaryExpression, Assignment, Write
+from syntax_tree import Program, Declaration, NumberLiteral, StringLiteral, If, CharLiteral, BooleanLiteral, Identifier, UnaryExpression, BinaryExpression, Assignment, Write
 
 class Parser:
     def __init__(self, tokens):
@@ -52,24 +52,41 @@ class Parser:
     def parse(self):
         statements = []
         while self.current().type != TokenType.EOF:
-            if self.current().type in (
-                TokenType.NUM,
-                TokenType.SENT,
-                TokenType.LOGIC,
-                TokenType.LETTER
-            ):
-                statements.append(self.parse_declaration())
-            elif self.current().type == TokenType.IDENTIFIER:
-                statements.append(self.parse_assignment())
-            elif self.current().type == TokenType.WRITE:
-                statements.append(self.parse_write())
-            else:
-                token = self.current()
-                raise SyntaxError(
-                    f"Unexpected token {token.type.name} "
-                    f"at line {token.line}, column {token.column}"
-                )
+            statements.append(self.parse_statement())
         return Program(statements)
+
+    def parse_block(self):
+        self.expect(TokenType.LEFT_BRACE)
+        statements = []
+        while (
+            self.current().type != TokenType.RIGHT_BRACE
+            and self.current().type != TokenType.EOF
+        ):
+            statements.append(self.parse_statement())
+        self.expect(TokenType.RIGHT_BRACE)
+
+        return statements
+
+    def parse_statement(self):
+        if self.current().type in (
+            TokenType.NUM,
+            TokenType.SENT,
+            TokenType.LOGIC,
+            TokenType.LETTER
+        ):
+            return self.parse_declaration()
+        elif self.current().type == TokenType.IDENTIFIER:
+            return self.parse_assignment()
+        elif self.current().type == TokenType.WRITE:
+            return self.parse_write()
+        elif self.current().type == TokenType.IF:
+            return self.parse_if()
+        else:
+            token = self.current()
+            raise SyntaxError(
+                f"Unexpected token {token.type.name} "
+                f"at line {token.line}, column {token.column}"
+            )
 
     def parse_primary(self):
         token = self.current()
@@ -241,6 +258,22 @@ class Parser:
         self.expect(TokenType.GREATER)
         self.expect(TokenType.STATEMENT_END)
         return Write(value)
+
+    def parse_if(self):
+        self.expect(TokenType.IF)
+        self.expect(TokenType.LEFT_BRACKET)
+        condition = self.parse_expression()
+        self.expect(TokenType.RIGHT_BRACKET)
+        body = self.parse_block()
+        else_body = None
+        if self.current().type == TokenType.OR_KEYWORD:
+            self.expect(TokenType.OR_KEYWORD)
+            else_body = self.parse_block()
+        return If(
+            condition,
+            body,
+            else_body
+        )
 
     def parse_expression(self):
         return self.parse_logical_or()

@@ -3,9 +3,9 @@ from parser.parser import Parser
 
 source = """
 num Age = 20\\
-write<Age>\\
-write<Age + 10>\\
-write<Age > 18>\\
+if [Age > 18] {
+    write<"Adult">\\
+}
 """
 
 lexer = Lexer(source)
