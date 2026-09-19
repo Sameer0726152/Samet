@@ -1,4 +1,4 @@
-from syntax_tree import Program, Declaration, NumberLiteral, Identifier, Write
+from syntax_tree import Program, Declaration, NumberLiteral, Identifier, Write, BinaryExpression
 class Environment:
     def __init__(self):
         self.variables = {}
@@ -31,3 +31,20 @@ class Interpreter:
             return node.value
         if isinstance(node, Identifier):
             return self.environment.get(node.name)
+        if isinstance(node, BinaryExpression):
+            left = self.evaluate(node.left)
+            right = self.evaluate(node.right)
+            operator = node.operator
+            if operator == "+":
+                return left + right
+            if operator == "-":
+                return left - right
+            if operator == "*":
+                return left * right
+            if operator == "/":
+                return left / right
+            if operator == "^":
+                return left ** right
+            raise RuntimeError(
+                f"Unknown binary operator '{operator}'"
+            )
