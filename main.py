@@ -3,12 +3,9 @@ from parser.parser import Parser
 from interpreter.interpreter import Interpreter
 
 source = """
-num A = 20\\
-write<A + 5>\\
-write<A - 5>\\
-write<A * 2>\\
-write<A / 2>\\
-write<A ^ 2>\\
+num Age = 20\\
+Age = Age + 1\\
+write<Age>\\
 """
 
 lexer = Lexer(source)

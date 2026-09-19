@@ -1,4 +1,4 @@
-from syntax_tree import Program, Declaration, NumberLiteral, Identifier, Write, BinaryExpression
+from syntax_tree import Program, Declaration, NumberLiteral, Identifier, Write, BinaryExpression, Assignment
 class Environment:
     def __init__(self):
         self.variables = {}
@@ -11,6 +11,10 @@ class Environment:
             raise RuntimeError(f"Undefined variable '{name}'")
         return self.variables[name]
 
+    def assign(self, name, value):
+        if name not in self.variables:
+            raise RuntimeError(f"Undefined variable '{name}'")
+        self.variables[name] = value
 class Interpreter:
     def __init__(self):
         self.environment = Environment()
@@ -22,6 +26,9 @@ class Interpreter:
         elif isinstance(node, Declaration):
             value = self.evaluate(node.value)
             self.environment.define(node.name, value)
+        elif isinstance(node, Assignment):
+            value = self.evaluate(node.value)
+            self.environment.assign(node.name, value)
         elif isinstance(node, Write):
             value = self.evaluate(node.value)
             print(value)
