@@ -1,15 +1,15 @@
 from lexer.lexer import Lexer
 from parser.parser import Parser
+from interpreter.interpreter import Interpreter
 
 source = """
 num Age = 20\\
-if [Age > 18] {
-    write<"Adult">\\
-}
+write<Age>\\
 """
 
 lexer = Lexer(source)
 tokens = lexer.tokenize()
 parser = Parser(tokens)
 tree = parser.parse()
-print(tree)
+interpreter = Interpreter()
+interpreter.execute(tree)
