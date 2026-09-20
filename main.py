@@ -4,8 +4,11 @@ from interpreter.interpreter import Interpreter
 
 source = """
 num Age = 20\\
-Age = Age + 1\\
-write<Age>\\
+write<Age > 18>\\
+write<Age == 20>\\
+write<!(Age > 18)>\\
+write<Age > 18 && Age < 60>\\
+write<Age < 10 || Age > 18>\\
 """
 
 lexer = Lexer(source)

@@ -1,4 +1,4 @@
-from syntax_tree import Program, Declaration, NumberLiteral, Identifier, Write, BinaryExpression, Assignment
+from syntax_tree import Program, Declaration, NumberLiteral, Identifier, Write, BinaryExpression, Assignment, UnaryExpression
 class Environment:
     def __init__(self):
         self.variables = {}
@@ -38,6 +38,13 @@ class Interpreter:
             return node.value
         if isinstance(node, Identifier):
             return self.environment.get(node.name)
+        if isinstance(node, UnaryExpression):
+            operand = self.evaluate(node.operand)
+            if node.operator == "!":
+                return not operand
+            if node.operator == "-":
+                return -operand
+            raise RuntimeError(f"Unknown unary operator '{node.operator}'")
         if isinstance(node, BinaryExpression):
             left = self.evaluate(node.left)
             right = self.evaluate(node.right)
@@ -52,6 +59,22 @@ class Interpreter:
                 return left / right
             if operator == "^":
                 return left ** right
+            if operator == "<":
+                return left < right
+            if operator == "<=":
+                return left <= right
+            if operator == ">":
+                return left > right
+            if operator == ">=":
+                return left >= right
+            if operator == "==":
+                return left == right
+            if operator == "!=":
+                return left != right
+            if operator == "&&":
+                return left and right
+            if operator == "||":
+                return left or right
             raise RuntimeError(
                 f"Unknown binary operator '{operator}'"
             )
