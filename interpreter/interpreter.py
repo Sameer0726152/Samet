@@ -1,4 +1,4 @@
-from syntax_tree import Program, Declaration, NumberLiteral, Identifier, Write, BinaryExpression, Assignment, UnaryExpression
+from syntax_tree import Program, Declaration, NumberLiteral, StringLiteral, CharLiteral, BooleanLiteral, Identifier, Write, BinaryExpression, Assignment, UnaryExpression
 class Environment:
     def __init__(self):
         self.variables = {}
@@ -35,6 +35,12 @@ class Interpreter:
 
     def evaluate(self, node):
         if isinstance(node, NumberLiteral):
+            return node.value
+        if isinstance(node, StringLiteral):
+            return node.value
+        if isinstance(node, CharLiteral):
+            return node.value
+        if isinstance(node, BooleanLiteral):
             return node.value
         if isinstance(node, Identifier):
             return self.environment.get(node.name)

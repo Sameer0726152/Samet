@@ -3,12 +3,17 @@ from parser.parser import Parser
 from interpreter.interpreter import Interpreter
 
 source = """
-num Age = 20\\
-write<Age > 18>\\
-write<Age == 20>\\
-write<!(Age > 18)>\\
-write<Age > 18 && Age < 60>\\
-write<Age < 10 || Age > 18>\\
+sent Name = "Sameer"\\
+letter Grade = 'A'\\
+logic Student = true\\
+logic A = true\\
+logic B = false\\
+write<Name>\\
+write<Grade>\\
+write<Student>\\
+write<A && B>\\
+write<A || B>\\
+write<!B>\\
 """
 
 lexer = Lexer(source)
