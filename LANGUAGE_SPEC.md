@@ -438,7 +438,7 @@ Samet supports:
 | Operator | Meaning |
 |---|---|
 | `&&` | Logical AND |
-| `||` | Logical OR |
+| `\|\|` | Logical OR |
 | `!` | Logical NOT |
 
 Examples:
